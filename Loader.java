@@ -6,18 +6,14 @@ import java.util.Scanner;
  * Class for reading the java file text.
  */
 public class Loader {
-    public static String load(String path) {
+    public static String load(String path) throws FileNotFoundException {
         StringBuilder text = new StringBuilder();
-        try {
-            File file = new File(path);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                text.append(scanner.nextLine());
-            }
-            scanner.close();
-        } catch (FileNotFoundException exception) {
-            exception.printStackTrace();
+        File file = new File(path);
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            text.append(scanner.nextLine());
         }
+        scanner.close();
         return text.toString();
     }
 }
