@@ -11,12 +11,14 @@ public class Stack<T> {
         elements.add(element);
     }
 
-    public void remove() {
-        elements.remove(elements.size());
+    public T pop() {
+        T element = elements.getLast();
+        elements.removeLast();
+        return element;
     }
 
-    public T peek(int index) {
-        return elements.get(index);
+    public T peek() {
+        return elements.getLast();
     }
 
     public int size() {
