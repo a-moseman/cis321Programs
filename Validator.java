@@ -2,13 +2,14 @@
  * Class for validating the java text
  */
 public class Validator {
-
+    Stack<Character> stack = new Stack<>();
+    Stack<Integer> lineNumberStack = new Stack<>();
     public boolean validate(String raw) {
         int parentheses = 0;
         int brackets = 0;
         int curlys = 0;
 
-        Stack<Character> stack = buildStack(raw);
+        buildStack(raw);
         Character last = null;
         while (stack.size() > 0) {
             char c = stack.peek();
@@ -69,15 +70,19 @@ public class Validator {
         return (a == ')' && b == '(') || (a == '}' || b == '{') || (a == ']' || b == '[');
     }
 
-    private Stack<Character> buildStack(String raw) {
-        Stack<Character> stack = new Stack<>();
+    private void buildStack(String raw) {
+        //Stack<Character> stack = new Stack<>();
+        int lineNumber = 0;
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
+            if (c=='\n'){
+                lineNumber++;
+            }
             if (isOfType(c)) {
                 stack.add(c);
             }
         }
-        return stack;
+        //return stack;
     }
 
 }
