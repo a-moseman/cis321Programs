@@ -6,6 +6,13 @@ import java.util.Scanner;
  * Class for reading the java file text.
  */
 public class Loader {
+    /**
+     * Read the text from a file.
+     * 
+     * @param path The file path.
+     * @return String
+     * @throws FileNotFoundException
+     */
     public static String load(String path) throws FileNotFoundException {
         StringBuilder text = new StringBuilder();
         File file = new File(path);
