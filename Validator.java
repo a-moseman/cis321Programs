@@ -4,14 +4,16 @@
 public class Validator {
     Stack<Character> stack = new Stack<>();
     Stack<Integer> lineNumberStack = new Stack<>();
-    public boolean validate(String raw) {
+    public int validate(String raw) {
         int parentheses = 0;
         int brackets = 0;
         int curlys = 0;
 
         buildStack(raw);
         Character last = null;
+        int line = 0;
         while (stack.size() > 0) {
+            line = lineNumberStack.pop();
             char c = stack.peek();
             if (c == '(') {
                 parentheses++;
@@ -29,17 +31,16 @@ public class Validator {
 
             if (last != null) {
                 if (isClosing(last) && isOpening(stack.peek()) && !isOpposite(last, stack.peek())) {
-                    System.out.println(last + ", " + stack.peek());
-                    return false;
+                    return line;
                 }
             } else {
                 if (isOpening(stack.peek())) {
-                    return false;
+                    return line;
                 }
             }
             last = stack.pop();
         }
-        return parentheses == 0 && curlys == 0 && brackets == 0;
+        return parentheses == 0 && curlys == 0 && brackets == 0 ? -1 : line ;
     }
 
     private boolean isBracket(char c) {
@@ -71,18 +72,17 @@ public class Validator {
     }
 
     private void buildStack(String raw) {
-        //Stack<Character> stack = new Stack<>();
-        int lineNumber = 0;
+        int lineNumber = 1;
         for (int i = 0; i < raw.length(); i++) {
             char c = raw.charAt(i);
             if (c=='\n'){
                 lineNumber++;
             }
-            if (isOfType(c)) {
+            else if (isOfType(c)) {
                 stack.add(c);
+                lineNumberStack.add(lineNumber);
             }
         }
-        //return stack;
     }
 
 }

@@ -11,7 +11,7 @@ public class Loader {
         File file = new File(path);
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
-            text.append(scanner.nextLine());
+            text.append(scanner.nextLine()).append("\n");
         }
         scanner.close();
         return text.toString();

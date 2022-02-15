@@ -3,20 +3,26 @@ import java.nio.file.FileAlreadyExistsException;
 
 public class CodeValidator {
     public static void main(String[] args) {
-        boolean isValid = false;
         String path = args[0];
         if (path.endsWith(".java")) {
             try{
                 String raw = Loader.load(path);
             Validator validator = new Validator();
-            isValid = validator.validate(raw);
+            int lineNumber = validator.validate(raw);
+            if(lineNumber == -1){
+                System.out.println("File is valid.");
+            }else{
+                System.out.println("File fails on line "+lineNumber);
+            }
+
             }
             catch (FileNotFoundException exception){
                 exception.printStackTrace();
-                isValid = false;
+                System.out.println("File not Found.");
+                
             }
+        } else {
+            System.out.println("File must be a .java file");
         }
-
-        System.out.println(isValid);
     }
 }
