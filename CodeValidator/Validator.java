@@ -1,3 +1,5 @@
+package CodeValidator;
+
 /**
  * Class for validating the java text
  */
