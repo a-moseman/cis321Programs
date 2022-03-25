@@ -10,6 +10,10 @@ public class Query {
         this.table = table;
     }
 
+    public String[] getResultSet() {
+        return resultSet;
+    }
+
     public Query select(String headerName) {
         String[] header = table.getHeader();
         String[][] rows = table.getRows();
@@ -38,7 +42,7 @@ public class Query {
                 list.add(field);
             }
         }
-        resultSet = (String[]) list.toArray();
+        resultSet = Util.listAsArray(list);
         return this;
     }
 
@@ -49,7 +53,7 @@ public class Query {
                 list.add(field);
             }
         }
-        resultSet = (String[]) list.toArray();
+        resultSet = Util.listAsArray(list);
         return this;
     }
 
@@ -60,7 +64,7 @@ public class Query {
                 list.add(field);
             }
         }
-        resultSet = (String[]) list.toArray();
+        resultSet = Util.listAsArray(list);
         return this;
     }
 }

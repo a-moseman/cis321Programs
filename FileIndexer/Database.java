@@ -3,6 +3,10 @@ package FileIndexer;
 public class Database {
     private Table table;
 
+    public Table getTable() {
+        return table;
+    }
+
     public void load(String path) {
         table = Loader.load(path);
     }
