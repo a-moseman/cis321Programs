@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Loader {
-    public Table load(String path) {
+    public static Table load(String path) {
         try {
             return loadTable(path);
         } catch (Exception e) {
@@ -14,13 +14,13 @@ public class Loader {
         }
     }
 
-    private Table loadTable(String path) throws Exception {
+    private static Table loadTable(String path) throws Exception {
         String[][] data = convertToTable(readToList(path));
         return new Table(data);
 
     }
 
-    private String[][] convertToTable(ArrayList<String> list) {
+    private static String[][] convertToTable(ArrayList<String> list) {
         int rows = list.size();
         int cols = list.get(0).split(",").length;
         String[][] tableData = new String[rows][cols];
@@ -32,7 +32,7 @@ public class Loader {
         return tableData;
     }
 
-    private ArrayList<String> readToList(String path) throws Exception {
+    private static ArrayList<String> readToList(String path) throws Exception {
         ArrayList<String> list = new ArrayList<>();
         FileReader fr = new FileReader(path);
         BufferedReader br = new BufferedReader(fr);
