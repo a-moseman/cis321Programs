@@ -30,4 +30,22 @@ public class Table {
         }
         return result;
     }
+
+    public String getRaw() {
+        String[][] data = new String[rows.length + 1][header.length];
+        data[0] = header;
+        for (int i = 1; i < data.length; i++) {
+            for (int j = 0; j < header.length; j++) {
+                data[i][j] = rows[i - 1][j];
+            }
+        }
+        StringBuilder raw = new StringBuilder();
+        for (String[] row : data) {
+            for (String field : row) {
+                raw.append(field).append(',');
+            }
+            raw.append('\n');
+        }
+        return raw.toString();
+    }
 }
