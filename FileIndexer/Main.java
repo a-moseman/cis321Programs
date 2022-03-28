@@ -15,6 +15,7 @@ public class Main {
             System.out.println(field);
         }
 
-        db.save("FileIndexer//data.csv");
+        // db.save("FileIndexer//data.csv");
+        db.saveBinary("FileIndexer//data.dat"); // TODO: save in chunks as will throw error
     }
 }

@@ -14,4 +14,8 @@ public class Database {
     public void save(String path) {
         Writer.save(table, path);
     }
+
+    public void saveBinary(String path) {
+        BinaryWriter.save(table, path);
+    }
 }
