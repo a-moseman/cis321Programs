@@ -8,7 +8,11 @@ public class Database {
     }
 
     public void load(String path) {
-        table = Loader.load(path);
+        table = Reader.load(path);
+    }
+
+    public void loadBinary(String path) {
+        table = BinaryReader.load(path);
     }
 
     public void save(String path) {
