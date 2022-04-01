@@ -26,7 +26,7 @@ public class Reader {
         String[][] tableData = new String[rows][cols];
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                tableData[r][c] = list.get(r).split(",")[c];
+                tableData[r][c] = Util.split(list.get(r), ',')[c];
             }
         }
         return tableData;

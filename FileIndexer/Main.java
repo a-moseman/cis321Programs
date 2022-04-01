@@ -2,7 +2,7 @@ package FileIndexer;
 
 public class Main {
     public static void main(String[] args) {
-        String path = "FileIndexer//phone_data_10000.txt";
+        String path = "FileIndexer//10E.txt";
         Database db = new Database();
         db.load(path);
 
