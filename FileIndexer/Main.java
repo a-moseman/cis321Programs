@@ -8,7 +8,7 @@ public class Main {
 
         Query query = new Query(db.getTable());
         String[] resultSet = query
-                .select("Name")
+                .select("name")
                 .whereGreaterThan("G")
                 .getResultSet();
         for (String field : resultSet) {
