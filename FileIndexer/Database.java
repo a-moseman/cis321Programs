@@ -12,7 +12,7 @@ public class Database {
     }
 
     public void loadBinary(String path) {
-        table = BinaryReader.load(path);
+        table = BinaryReader.initialLoad(path);
     }
 
     public void save(String path) {

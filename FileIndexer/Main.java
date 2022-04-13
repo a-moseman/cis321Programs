@@ -2,7 +2,7 @@ package FileIndexer;
 
 public class Main {
     public static void main(String[] args) {
-        String path = "FileIndexer//10E.txt";
+        String path = "FileIndexer//10E.csv";
         Database db = new Database();
         db.load(path);
 

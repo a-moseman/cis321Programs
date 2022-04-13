@@ -28,4 +28,24 @@ public class Util {
         contents.add(content.toString()); // Add the last part of the string
         return contents.toArray(new String[0]);
     }
+
+    public static String rowAsString(String[] row) {
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < row.length; i++) {
+            output.append(row[i]);
+            if (i < row.length - 1) {
+                output.append(',');
+            }
+        }
+        return output.toString();
+    }
+
+    public static String rowsAsString(String[][] rows) {
+        StringBuilder output = new StringBuilder();
+        for (String[] row : rows) {
+            output.append(rowAsString(row));
+            output.append('\n');
+        }
+        return output.toString();
+    }
 }
