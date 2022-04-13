@@ -2,7 +2,7 @@ package FileIndexer;
 
 public class Main {
     public static void main(String[] args) {
-        String path = "cis321Programs//FileIndexer//10E.csv";
+        String path = "FileIndexer//10E.csv";
         Database db = new Database();
         db.loadBinary(path);
 
