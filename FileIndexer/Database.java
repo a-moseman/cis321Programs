@@ -7,19 +7,15 @@ public class Database {
         return table;
     }
 
-    public void load(String path) {
-        table = Reader.load(path);
+    public void loadBinary(String dirPath, String fileName) {
+        table = BinaryReader.load(dirPath, fileName);
     }
 
-    public void loadBinary(String path) {
+    public void saveBinary(String dirPath, String fileName) {
+        BinaryWriter.save(table, dirPath, fileName);
+    }
+
+    public void initialBinaryLoad(String path) {
         table = BinaryReader.initialLoad(path);
-    }
-
-    public void save(String path) {
-        Writer.save(table, path);
-    }
-
-    public void saveBinary(String path) {
-        BinaryWriter.save(table, path);
     }
 }

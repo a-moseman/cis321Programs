@@ -9,16 +9,15 @@ import java.util.Hashtable;
 public class BinaryWriter {
     private static final int ROWS_PER_FILE = 100;
 
-    public static void save(Table table, String path) {
+    public static void save(Table table, String dirPath, String fileName) {
         try {
-            saveTable(table, path);
+            saveTable(table, dirPath, fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void saveIndexFile(Table table) throws Exception {
-        // TODO: test
+    private static void saveIndexFile(Table table, String dirPath) throws Exception {
         Hashtable<String, ArrayList<Integer>> data = new Hashtable<>();
         String[][] rows = table.getRows();
         for (int i = 0; i < rows.length; i++) {
@@ -45,27 +44,25 @@ public class BinaryWriter {
             output.append('\"').append('\n');
         }
 
-        File file = new File("indexfile.dat");
+        File file = new File(dirPath + "//indexfile.dat");
         file.createNewFile();
-        RandomAccessFile randomAccessFile = new RandomAccessFile("indexfile.dat", "rw");
+        RandomAccessFile randomAccessFile = new RandomAccessFile(dirPath + "//indexfile.dat", "rw");
         randomAccessFile.writeUTF(output.toString());
         randomAccessFile.close();
     }
 
-    private static void saveTable(Table table, String path) throws Exception {
-        // TODO: test
-        saveIndexFile(table);
+    private static void saveTable(Table table, String dirPath, String fileName) throws Exception {
+        saveIndexFile(table, dirPath);
         String headerRaw = Util.rowAsString(table.getHeader());
         String[][] rows = table.getRows();
         // write data files
         int index = 0;
         while (rows.length > 0) {
-            String filePath = path + '-' + (index) + ".dat";
+            String filePath = dirPath + "//" + fileName + '-' + (index) + ".dat";
             File file = new File(filePath);
             file.createNewFile();
             RandomAccessFile randomAccessFile = new RandomAccessFile(filePath, "rw");
             // convert data
-            System.out.println(rows.length); // DEBUG
             String rowsRaw = Util
                     .rowsAsString(
                             Arrays.copyOfRange(rows, 0, Math.min(rows.length - 1, ROWS_PER_FILE - 1)));
