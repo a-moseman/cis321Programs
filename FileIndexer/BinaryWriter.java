@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 public class BinaryWriter {
-    private static final int ROWS_PER_FILE = 100;
+    private static final int ROWS_PER_FILE = 50;
 
     public static void save(Table table, String path) {
         try {
@@ -26,7 +26,7 @@ public class BinaryWriter {
                 data.get(rows[i][0]).add(i);
             }
             else {
-                data.put(rows[i]][0], new ArrayList<>());
+                data.put(rows[i][0], new ArrayList<>());
                 data.get(rows[i][0]).add(i);
             }
         }
@@ -58,9 +58,9 @@ public class BinaryWriter {
         // write data files
         int rowsSaved = 0;
         while (rowsSaved < rows.length) {
-            File file = new File(path);
+            File file = new File(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"));
             file.createNewFile();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(path + '-' + (rowsSaved / ROWS_PER_FILE), "rw");
+            RandomAccessFile randomAccessFile = new RandomAccessFile(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"), "rw");
             // convert data
             String rowsRaw = Util
                     .rowsAsString(

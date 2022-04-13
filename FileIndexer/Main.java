@@ -2,9 +2,9 @@ package FileIndexer;
 
 public class Main {
     public static void main(String[] args) {
-        String path = "FileIndexer//10E.csv";
+        String path = "cis321Programs//FileIndexer//10E.csv";
         Database db = new Database();
-        db.load(path);
+        db.loadBinary(path);
 
         Query query = new Query(db.getTable());
         String[] resultSet = query
@@ -16,6 +16,6 @@ public class Main {
         }
 
         // db.save("FileIndexer//data.csv");
-        db.saveBinary("FileIndexer//data.dat"); // TODO: save in chunks as will throw error
+        db.saveBinary("data"); // TODO: save in chunks as will throw error
     }
 }
