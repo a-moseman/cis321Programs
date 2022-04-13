@@ -42,9 +42,11 @@ public class Util {
 
     public static String rowsAsString(String[][] rows) {
         StringBuilder output = new StringBuilder();
-        for (String[] row : rows) {
-            output.append(rowAsString(row));
-            output.append('\n');
+        for (int i = 0; i < rows.length; i++) {
+            output.append(rowAsString(rows[i]));
+            if (i < rows.length - 1) {
+                output.append('\n');
+            }
         }
         return output.toString();
     }

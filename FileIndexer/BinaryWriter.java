@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 public class BinaryWriter {
-    private static final int ROWS_PER_FILE = 50;
+    private static final int ROWS_PER_FILE = 100;
 
     public static void save(Table table, String path) {
         try {
@@ -58,23 +58,28 @@ public class BinaryWriter {
         String headerRaw = Util.rowAsString(table.getHeader());
         String[][] rows = table.getRows();
         // write data files
-        int rowsSaved = 0;
-        while (rowsSaved < rows.length) {
-            File file = new File(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"));
+        int index = 0;
+        while (rows.length > 0) {
+            String filePath = path + '-' + (index) + ".dat";
+            File file = new File(filePath);
             file.createNewFile();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"),
-                    "rw");
+            RandomAccessFile randomAccessFile = new RandomAccessFile(filePath, "rw");
             // convert data
+            System.out.println(rows.length); // DEBUG
             String rowsRaw = Util
                     .rowsAsString(
-                            Arrays.copyOfRange(rows, rowsSaved, Math.min(rowsSaved + ROWS_PER_FILE, rows.length)));
+                            Arrays.copyOfRange(rows, 0, Math.min(rows.length - 1, ROWS_PER_FILE - 1)));
 
             rowsRaw = headerRaw + '\n' + rowsRaw;
             // write data
             randomAccessFile.writeUTF(rowsRaw);
             randomAccessFile.close();
-            rowsSaved += ROWS_PER_FILE;
-            rows = Arrays.copyOfRange(rows, rowsSaved, Math.min(rowsSaved + ROWS_PER_FILE, rows.length));
+            if (rows.length < ROWS_PER_FILE) {
+                break;
+            }
+            rows = Arrays.copyOfRange(rows, ROWS_PER_FILE, rows.length - 1);
+
+            index++;
         }
     }
 }
