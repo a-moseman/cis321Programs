@@ -1,14 +1,24 @@
 package FileIndexer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 public class Table {
     private String[] header;
     private String[][] rows;
+    private Hashtable<String, ArrayList<Integer>> indices; // TODO: try tree hash?
 
     public Table(String[][] data) {
         this.header = data[0];
         this.rows = Arrays.copyOfRange(data, 1, data.length);
+        this.indices = null;
+    }
+
+    public Table(String[][] data, Hashtable<String, ArrayList<Integer>> indices) {
+        this.header = data[0];
+        this.rows = Arrays.copyOfRange(data, 1, data.length);
+        this.indices = indices;
     }
 
     public String[] getHeader() {
@@ -17,6 +27,10 @@ public class Table {
 
     public String[][] getRows() {
         return rows;
+    }
+
+    public ArrayList<Integer> getIndices(String key) {
+        return indices.get(key);
     }
 
     public String getRaw() {

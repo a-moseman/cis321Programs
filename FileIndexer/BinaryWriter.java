@@ -31,7 +31,7 @@ public class BinaryWriter {
 
         StringBuilder output = new StringBuilder();
         for (String key : data.keySet()) {
-            output.append(key)
+            output.append('\"').append(key).append('\"')
                     .append(',')
                     .append('\"');
 
@@ -43,6 +43,7 @@ public class BinaryWriter {
             }
             output.append('\"').append('\n');
         }
+        output.deleteCharAt(output.length() - 1);
 
         File file = new File(dirPath + "//indexfile.dat");
         file.createNewFile();

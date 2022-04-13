@@ -11,22 +11,25 @@ public class Util {
         return array;
     }
 
-    public static String[] split(String string, char delimiter) {
-        ArrayList<String> contents = new ArrayList<>();
+    public static String[] split(String string, char delimiter, boolean keepQuotes) {
+        ArrayList<String> row = new ArrayList<>();
         boolean inQuotes = false;
-        StringBuilder content = new StringBuilder();
+        StringBuilder field = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '"') {
                 inQuotes = !inQuotes;
+                if (keepQuotes) {
+                    field.append('\"');
+                }
             } else if (!inQuotes && string.charAt(i) == delimiter) {
-                contents.add(content.toString());
-                content = new StringBuilder();
+                row.add(field.toString());
+                field = new StringBuilder();
             } else {
-                content.append(string.charAt(i));
+                field.append(string.charAt(i));
             }
         }
-        contents.add(content.toString()); // Add the last part of the string
-        return contents.toArray(new String[0]);
+        row.add(field.toString()); // Add the last part of the string
+        return row.toArray(new String[0]);
     }
 
     public static String rowAsString(String[] row) {

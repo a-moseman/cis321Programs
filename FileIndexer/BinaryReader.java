@@ -3,6 +3,7 @@ package FileIndexer;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class BinaryReader extends Reader {
     public static Table initialLoad(String path) {
@@ -36,7 +37,6 @@ public class BinaryReader extends Reader {
     }
 
     public static Table loadTable(String dirPath, String fileName) throws Exception {
-        // TODO: read from each file previously saved
         File[] dir = new File(dirPath).listFiles();
         String[][] data = new String[0][0];
         for (int i = 0; i < dir.length; i++) {
@@ -45,13 +45,9 @@ public class BinaryReader extends Reader {
             if (name.equals("indexfile.dat")) {
                 continue;
             }
-            // String shouldBeInt = name.replace(fileName + '-', "").replace(".dat", "");
-            // System.out.println(shouldBeInt); // DEBUG
-            // int index = Integer.parseInt(shouldBeInt);
-            // build data
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
             String raw = randomAccessFile.readUTF();
-            String[] splitRaw = Util.split(raw, '\n');
+            String[] splitRaw = Util.split(raw, '\n', false);
             ArrayList<String> lines = new ArrayList<>();
             for (String line : splitRaw) {
                 lines.add(line);
@@ -63,6 +59,23 @@ public class BinaryReader extends Reader {
             }
             randomAccessFile.close();
         }
-        return new Table(data);
+
+        Hashtable<String, ArrayList<Integer>> index = new Hashtable<>();
+        File file = new File(dirPath + "//indexfile.dat");
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+        String raw = randomAccessFile.readUTF();
+        String[] splitRaw = Util.split(raw, '\n', true);
+        for (String line : splitRaw) {
+            String[] entry = Util.split(line, ',', true);
+            String key = entry[0].substring(1, entry[0].length() - 1);
+            String[] indices = entry[1].substring(1, entry[1].length() - 1).split(",");
+            ArrayList<Integer> realIndices = new ArrayList<>();
+            for (String i : indices) {
+                realIndices.add(Integer.parseInt(i));
+            }
+            index.put(key, realIndices);
+        }
+        randomAccessFile.close();
+        return new Table(data, index);
     }
 }
