@@ -24,8 +24,7 @@ public class BinaryWriter {
         for (int i = 0; i < rows.length; i++) {
             if (data.containsKey(rows[i][0])) {
                 data.get(rows[i][0]).add(i);
-            }
-            else {
+            } else {
                 data.put(rows[i][0], new ArrayList<>());
                 data.get(rows[i][0]).add(i);
             }
@@ -34,11 +33,14 @@ public class BinaryWriter {
         StringBuilder output = new StringBuilder();
         for (String key : data.keySet()) {
             output.append(key)
-                .append(',')
-                .append('\"');
+                    .append(',')
+                    .append('\"');
 
-            for (Integer i : data.get(key)) {
-                output.append(i).append(',');
+            for (int i = 0; i < data.get(key).size(); i++) {
+                output.append(data.get(key).get(i));
+                if (i < data.get(key).size() - 1) {
+                    output.append(',');
+                }
             }
             output.append('\"').append('\n');
         }
@@ -60,7 +62,8 @@ public class BinaryWriter {
         while (rowsSaved < rows.length) {
             File file = new File(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"));
             file.createNewFile();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"), "rw");
+            RandomAccessFile randomAccessFile = new RandomAccessFile(path + '-' + (rowsSaved / ROWS_PER_FILE + ".dat"),
+                    "rw");
             // convert data
             String rowsRaw = Util
                     .rowsAsString(

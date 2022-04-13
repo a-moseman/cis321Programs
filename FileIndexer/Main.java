@@ -14,8 +14,6 @@ public class Main {
         for (String field : resultSet) {
             System.out.println(field);
         }
-
-        // db.save("FileIndexer//data.csv");
-        db.saveBinary("data"); // TODO: save in chunks as will throw error
+        db.saveBinary("data");
     }
 }
