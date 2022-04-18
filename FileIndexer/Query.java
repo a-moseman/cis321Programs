@@ -4,67 +4,58 @@ import java.util.ArrayList;
 
 public class Query {
     private Table table;
-    private String[] resultSet;
+    private String[][] resultSet;
 
     public Query(Table table) {
         this.table = table;
+        this.resultSet = table.getRows();
     }
 
-    public String[] getResultSet() {
+    public String[][] getResultSet() {
         return resultSet;
     }
 
-    public Query select(String headerName) {
-        String[] header = table.getHeader();
-        String[][] rows = table.getRows();
-        int index = -1;
-        for (int i = 0; i < header.length; i++) {
-            if (header[i].equals(headerName)) {
-                index = i;
+    public Query filter(String headerName, char operator, String toCompareTo) throws Exception {
+        if (headerName.equals("name") && operator == '=') {
+            resultSet = table.getByName(toCompareTo);
+            return this;
+        }
+
+        int headerIndex = -1;
+        for (int i = 0; i < table.getHeader().length; i++) {
+            if (table.getHeader()[i].equals(headerName)) {
+                headerIndex = i;
                 break;
             }
         }
-        // if not in header
-        if (index == -1) {
-            return null;
+        if (headerIndex < 0) {
+            throw new Exception("Header name not found.");
         }
-        resultSet = new String[rows.length];
-        for (int i = 0; i < rows.length; i++) {
-            resultSet[i] = rows[i][index];
+
+        ArrayList<String[]> resultList = new ArrayList<>();
+        for (String[] row : resultSet) {
+            if (compare(row[headerIndex], operator, toCompareTo)) {
+                resultList.add(row);
+            }
         }
+        String[][] newResultSet = new String[resultList.size()][table.getRows()[0].length];
+        for (int i = 0; i < newResultSet.length; i++) {
+            newResultSet[i] = resultList.get(i);
+        }
+        resultSet = newResultSet;
         return this;
     }
 
-    public Query whereGreaterThan(String toCompareTo) {
-        ArrayList<String> list = new ArrayList<>();
-        for (String field : resultSet) {
-            if (field.compareTo(toCompareTo) > 0) {
-                list.add(field);
-            }
+    private boolean compare(String a, char op, String b) {
+        switch (op) {
+            case '=':
+                return a.compareTo(b) == 0;
+            case '>':
+                return a.compareTo(b) > 0;
+            case '<':
+                return a.compareTo(b) < 0;
+            default:
+                return false;
         }
-        resultSet = Util.listAsArray(list);
-        return this;
-    }
-
-    public Query whereLessThan(String toCompareTo) {
-        ArrayList<String> list = new ArrayList<>();
-        for (String field : resultSet) {
-            if (field.compareTo(toCompareTo) < 0) {
-                list.add(field);
-            }
-        }
-        resultSet = Util.listAsArray(list);
-        return this;
-    }
-
-    public Query whereEqualTo(String toCompareTo) {
-        ArrayList<String> list = new ArrayList<>();
-        for (String field : resultSet) {
-            if (field.compareTo(toCompareTo) == 0) {
-                list.add(field);
-            }
-        }
-        resultSet = Util.listAsArray(list);
-        return this;
     }
 }

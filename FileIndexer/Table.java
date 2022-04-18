@@ -26,15 +26,14 @@ public class Table {
     }
 
     public String[][] getRows() {
-        System.out.println(indices);
         return rows;
     }
 
-    public String[][] getByName(String name){
+    public String[][] getByName(String name) {
         ArrayList<Integer> indicesByName = getIndices(name);
         String[][] results = new String[indicesByName.size()][rows[0].length];
         int j = 0;
-        for (Integer i : indicesByName){
+        for (Integer i : indicesByName) {
             results[j] = rows[i];
             j++;
         }

@@ -1,3 +1,5 @@
+package FileIndexer;
+
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -25,11 +27,10 @@ public class TableCache {
         if (headerCache.size() > MAX_HEADER_CACHE_SIZE) {
             entries = (List<Entry>) headerCache.values();
             Collections.sort(entries);
+            while (headerCache.size() > MAX_HEADER_CACHE_SIZE) {
+                headerCache.remove(entries.get(0).KEY);
+            }
         }
-        while (headerCache.size() > MAX_HEADER_CACHE_SIZE) {
-            headerCache.remove(entries.get(0).KEY);
-        }
-
     }
 
     class Entry implements Comparable<Entry> {

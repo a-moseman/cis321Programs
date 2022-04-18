@@ -13,12 +13,23 @@ public class Main {
         db.loadBinary(dirPath, fileName);
 
         Query query = new Query(db.getTable());
-        String[] resultSet = query
-                .select("name")
-                .whereGreaterThan("G")
-                .getResultSet();
-        for (String field : resultSet) {
-            //System.out.println(field);
+        String[][] resultSet = new String[0][0];
+        try {
+            resultSet = query
+                    .filter("name", '>', "G")
+                    .filter("type", '=', "Instant")
+                    .filter("cmc", '>', "2")
+                    .getResultSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        for (String[] row : resultSet) {
+            for (String field : row) {
+                System.out.print(field + ',');
+            }
+            System.out.println();
         }
     }
 }
