@@ -18,7 +18,7 @@ public class Main {
                 .whereGreaterThan("G")
                 .getResultSet();
         for (String field : resultSet) {
-            System.out.println(field);
+            //System.out.println(field);
         }
     }
 }
