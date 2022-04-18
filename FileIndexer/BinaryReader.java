@@ -46,7 +46,9 @@ public class BinaryReader extends Reader {
                 continue;
             }
             RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            String raw = randomAccessFile.readUTF();
+            byte[] buf = new byte[(int) randomAccessFile.length()];
+            randomAccessFile.read(buf);
+            String raw = CSV.uncompress(buf);
             String[] splitRaw = Util.split(raw, '\n', false);
             ArrayList<String> lines = new ArrayList<>();
             for (String line : splitRaw) {
@@ -63,7 +65,9 @@ public class BinaryReader extends Reader {
         Hashtable<String, ArrayList<Integer>> index = new Hashtable<>();
         File file = new File(dirPath + "//indexfile.dat");
         RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-        String raw = randomAccessFile.readUTF();
+        byte[] buf = new byte[(int) randomAccessFile.length()];
+        randomAccessFile.read(buf);
+        String raw = CSV.uncompress(buf);
         String[] splitRaw = Util.split(raw, '\n', true);
         for (String line : splitRaw) {
             String[] entry = Util.split(line, ',', true);

@@ -48,7 +48,8 @@ public class BinaryWriter {
         File file = new File(dirPath + "//indexfile.dat");
         file.createNewFile();
         RandomAccessFile randomAccessFile = new RandomAccessFile(dirPath + "//indexfile.dat", "rw");
-        randomAccessFile.writeUTF(output.toString());
+        byte[] compressedData = CSV.compress(output.toString());
+        randomAccessFile.write(compressedData);
         randomAccessFile.close();
     }
 
@@ -70,7 +71,8 @@ public class BinaryWriter {
 
             rowsRaw = headerRaw + '\n' + rowsRaw;
             // write data
-            randomAccessFile.writeUTF(rowsRaw);
+            byte[] compressedData = CSV.compress(rowsRaw);
+            randomAccessFile.write(compressedData);
             randomAccessFile.close();
             if (rows.length < ROWS_PER_FILE) {
                 break;
