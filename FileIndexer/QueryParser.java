@@ -1,7 +1,36 @@
 package FileIndexer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.List;
+
 public class QueryParser {
-    public static String[][] parse(Database db, String query) {
+    private Database db;
+    private Hashtable<String, CacheEntry> cache;
+
+    public QueryParser(Database db) {
+        this.db = db;
+        this.cache = new Hashtable<>();
+    }
+
+    private void manageCache() {
+        List<CacheEntry> list = new ArrayList<CacheEntry>(cache.values());
+        ArrayList<String> keysToRemove = new ArrayList<>();
+        Collections.sort(list);
+        while (list.size() > 10) {
+            keysToRemove.add(list.get(0).QUERY);
+            list.remove(0);
+        }
+        for (String key : keysToRemove) {
+            cache.remove(key);
+        }
+    }
+
+    public String[][] parse(String query) {
+        if (cache.containsKey(query)) {
+            return cache.get(query).RESULT_SET;
+        }
         Query q = new Query(db.getTable());
         String[] subqueries = query.split("&&");
         for (String subquery : subqueries) {
@@ -17,6 +46,8 @@ public class QueryParser {
                 return null;
             }
         }
+        cache.put(query, new CacheEntry(query, q.getResultSet()));
+        manageCache();
         return q.getResultSet();
     }
 }

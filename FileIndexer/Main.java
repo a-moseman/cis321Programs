@@ -1,24 +1,31 @@
 package FileIndexer;
 
-public class Main {
-    public static void main(String[] args) {
-        // TODO: check if already intially loaded
-        String path = "FileIndexer//10E.csv";
-        String dirPath = "FileIndexer//dataFiles";
-        String fileName = "data";
-        Database db = new Database();
-        db.initialBinaryLoad(path);
-        db.saveBinary(dirPath, fileName);
-        // finish initial set up
-        db.loadBinary(dirPath, fileName, "indexfile.dat");
-        String query = "name < G && name > D";
-        String[][] resultSet = QueryParser.parse(db, query);
+import java.io.File;
 
-        for (String[] row : resultSet) {
-            for (String field : row) {
-                System.out.print(field + ',');
-            }
-            System.out.println();
+public class Main {
+    private static String SOURCE_PATH = "FileIndexer//10E.csv";
+    private static String DIR_PATH = "FileIndexer//dataFiles";
+    private static String FILE_NAME = "data";
+    private static String INDEX_FILE_NAME = "indexfile.dat";
+
+    public static void main(String[] args) {
+        Database db = new Database();
+        if (!binFilesExist()) {
+            db.initialBinaryLoad(SOURCE_PATH);
+            db.saveBinary(DIR_PATH, FILE_NAME);
         }
+        db.loadBinary(DIR_PATH, FILE_NAME, INDEX_FILE_NAME);
+        runDemo(db);
+    }
+
+    private static boolean binFilesExist() {
+        return (new File(DIR_PATH)).listFiles().length > 0;
+    }
+
+    private static void runDemo(Database db) {
+        QueryParser qp = new QueryParser(db);
+        String query = "name < G && name > D";
+        String[][] resultSet = qp.parse(query);
+        Util.print2DStringArray(resultSet);
     }
 }

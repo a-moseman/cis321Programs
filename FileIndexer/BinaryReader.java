@@ -6,7 +6,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-public class BinaryReader extends Reader {
+public class BinaryReader {
 
     /**
      * Load the source data into a table for processing.
@@ -105,5 +105,29 @@ public class BinaryReader extends Reader {
         String[][] data = readTableData(dirPath, fileName);
         Hashtable<String, ArrayList<Integer>> index = readTableIndexData(dirPath, indexFileName);
         return new Table(data, index);
+    }
+
+    protected static String[][] convertToTable(String[] array) {
+        int rows = array.length;
+        int cols = array[0].split(",").length;
+        String[][] tableData = new String[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                tableData[r][c] = Util.split(array[r], ',', false)[c];
+            }
+        }
+        return tableData;
+    }
+
+    protected static String[][] convertToTable(ArrayList<String> list) {
+        int rows = list.size();
+        int cols = list.get(0).split(",").length;
+        String[][] tableData = new String[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                tableData[r][c] = Util.split(list.get(r), ',', false)[c];
+            }
+        }
+        return tableData;
     }
 }
