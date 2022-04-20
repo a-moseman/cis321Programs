@@ -20,8 +20,19 @@ public class Reader {
 
     }
 
+    protected static String[][] convertToTable(String[] array) {
+        int rows = array.length;
+        int cols = array[0].split(",").length;
+        String[][] tableData = new String[rows][cols];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                tableData[r][c] = Util.split(array[r], ',', false)[c];
+            }
+        }
+        return tableData;
+    }
+
     protected static String[][] convertToTable(ArrayList<String> list) {
-        // TODO: bug where named characters fail cause comma
         int rows = list.size();
         int cols = list.get(0).split(",").length;
         String[][] tableData = new String[rows][cols];

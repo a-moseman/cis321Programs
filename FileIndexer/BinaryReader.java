@@ -1,11 +1,16 @@
 package FileIndexer;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class BinaryReader extends Reader {
+
+    /**
+     * Load the source data into a table for processing.
+     */
     public static Table initialLoad(String path) {
         try {
             return initialLoadTable(path);
@@ -15,16 +20,23 @@ public class BinaryReader extends Reader {
         }
     }
 
-    public static Table load(String dirPath, String fileName) {
+    /**
+     * Load from compressed binary files to table.
+     * 
+     * @param dirPath  The directory path.
+     * @param fileName The file name.
+     * @return Table
+     */
+    public static Table load(String dirPath, String fileName, String indexFileName) {
         try {
-            return loadTable(dirPath, fileName);
+            return loadTable(dirPath, fileName, indexFileName);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Table initialLoadTable(String path) throws Exception {
+    private static Table initialLoadTable(String path) throws Exception {
         RandomAccessFile randomAccessFile = new RandomAccessFile(path, "r");
         String line;
         ArrayList<String> lines = new ArrayList<>();
@@ -36,38 +48,45 @@ public class BinaryReader extends Reader {
         return new Table(data);
     }
 
-    public static Table loadTable(String dirPath, String fileName) throws Exception {
+    private static byte[] readBytesFromFile(File file) throws IOException {
+        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+        byte[] buf = new byte[(int) randomAccessFile.length()];
+        randomAccessFile.read(buf);
+        randomAccessFile.close();
+        return buf;
+    }
+
+    private static String readFromCompressedFile(File file) throws IOException {
+        return CSV.uncompress(readBytesFromFile(file));
+    }
+
+    private static String[][] addFileContentsToData(String[][] data, String fileContents) {
+        String[] splitRaw = Util.split(fileContents, '\n', false);
+        if (data.length == 0) {
+            return convertToTable(splitRaw);
+        } else {
+            return Util.concatenateArrays(data, convertToTable(splitRaw));
+        }
+    }
+
+    private static String[][] readTableData(String dirPath, String fileName) throws IOException {
         File[] dir = new File(dirPath).listFiles();
         String[][] data = new String[0][0];
         for (int i = 0; i < dir.length; i++) {
             File file = dir[i];
-            String name = file.getName();
-            if (name.equals("indexfile.dat")) {
-                continue;
+            if (!file.getName().equals("indexfile.dat")) {
+                String raw = readFromCompressedFile(file);
+                data = addFileContentsToData(data, raw);
             }
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            byte[] buf = new byte[(int) randomAccessFile.length()];
-            randomAccessFile.read(buf);
-            String raw = CSV.uncompress(buf);
-            String[] splitRaw = Util.split(raw, '\n', false);
-            ArrayList<String> lines = new ArrayList<>();
-            for (String line : splitRaw) {
-                lines.add(line);
-            }
-            if (data.length == 0) {
-                data = convertToTable(lines);
-            } else {
-                data = Util.concatenateArrays(data, convertToTable(lines));
-            }
-            randomAccessFile.close();
         }
+        return data;
+    }
 
+    private static Hashtable<String, ArrayList<Integer>> readTableIndexData(String dirPath, String indexFileName)
+            throws IOException {
         Hashtable<String, ArrayList<Integer>> index = new Hashtable<>();
-        File file = new File(dirPath + "//indexfile.dat");
-        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-        byte[] buf = new byte[(int) randomAccessFile.length()];
-        randomAccessFile.read(buf);
-        String raw = CSV.uncompress(buf);
+        File file = new File(dirPath + "//" + indexFileName);
+        String raw = readFromCompressedFile(file);
         String[] splitRaw = Util.split(raw, '\n', true);
         for (String line : splitRaw) {
             String[] entry = Util.split(line, ',', true);
@@ -79,7 +98,12 @@ public class BinaryReader extends Reader {
             }
             index.put(key, realIndices);
         }
-        randomAccessFile.close();
+        return index;
+    }
+
+    private static Table loadTable(String dirPath, String fileName, String indexFileName) throws Exception {
+        String[][] data = readTableData(dirPath, fileName);
+        Hashtable<String, ArrayList<Integer>> index = readTableIndexData(dirPath, indexFileName);
         return new Table(data, index);
     }
 }

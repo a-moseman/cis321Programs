@@ -44,13 +44,7 @@ public class BinaryWriter {
             output.append('\"').append('\n');
         }
         output.deleteCharAt(output.length() - 1);
-
-        File file = new File(dirPath + "//indexfile.dat");
-        file.createNewFile();
-        RandomAccessFile randomAccessFile = new RandomAccessFile(dirPath + "//indexfile.dat", "rw");
-        byte[] compressedData = CSV.compress(output.toString());
-        randomAccessFile.write(compressedData);
-        randomAccessFile.close();
+        writeToCompressedFile(dirPath + "//indexfile.dat", output.toString());
     }
 
     private static void saveTable(Table table, String dirPath, String fileName) throws Exception {
@@ -60,20 +54,14 @@ public class BinaryWriter {
         // write data files
         int index = 0;
         while (rows.length > 0) {
-            String filePath = dirPath + "//" + fileName + '-' + (index) + ".dat";
-            File file = new File(filePath);
-            file.createNewFile();
-            RandomAccessFile randomAccessFile = new RandomAccessFile(filePath, "rw");
-            // convert data
             String rowsRaw = Util
                     .rowsAsString(
                             Arrays.copyOfRange(rows, 0, Math.min(rows.length - 1, ROWS_PER_FILE - 1)));
 
             rowsRaw = headerRaw + '\n' + rowsRaw;
-            // write data
-            byte[] compressedData = CSV.compress(rowsRaw);
-            randomAccessFile.write(compressedData);
-            randomAccessFile.close();
+
+            String filePath = dirPath + "//" + fileName + '-' + (index) + ".dat";
+            writeToCompressedFile(filePath, rowsRaw);
             if (rows.length < ROWS_PER_FILE) {
                 break;
             }
@@ -81,5 +69,14 @@ public class BinaryWriter {
 
             index++;
         }
+    }
+
+    private static void writeToCompressedFile(String path, String data) throws Exception {
+        File file = new File(path);
+        file.createNewFile();
+        RandomAccessFile randomAccessFile = new RandomAccessFile(path, "rw");
+        byte[] compressedData = CSV.compress(data);
+        randomAccessFile.write(compressedData);
+        randomAccessFile.close();
     }
 }

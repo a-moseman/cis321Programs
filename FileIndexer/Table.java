@@ -7,7 +7,7 @@ import java.util.Hashtable;
 public class Table {
     private String[] header;
     private String[][] rows;
-    private Hashtable<String, ArrayList<Integer>> indices; // TODO: try tree hash?
+    private Hashtable<String, ArrayList<Integer>> indices;
 
     public Table(String[][] data) {
         this.header = data[0];

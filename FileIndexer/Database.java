@@ -7,8 +7,8 @@ public class Database {
         return table;
     }
 
-    public void loadBinary(String dirPath, String fileName) {
-        table = BinaryReader.load(dirPath, fileName);
+    public void loadBinary(String dirPath, String fileName, String indexFileName) {
+        table = BinaryReader.load(dirPath, fileName, indexFileName);
     }
 
     public void saveBinary(String dirPath, String fileName) {
