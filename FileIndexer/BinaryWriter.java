@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
+import FileIndexer.GlyphicalLib.CSV;
+
 public class BinaryWriter {
     private static final int ROWS_PER_FILE = 100;
 

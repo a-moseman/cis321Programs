@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import FileIndexer.GlyphicalLib.CSV;
+
 public class BinaryReader {
 
     /**

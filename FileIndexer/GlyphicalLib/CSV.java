@@ -1,4 +1,4 @@
-package FileIndexer;
+package FileIndexer.GlyphicalLib;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -1,4 +1,4 @@
-package FileIndexer;
+package FileIndexer.GlyphicalLib;
 
 public class ArrayOperations {
 
