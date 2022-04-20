@@ -28,26 +28,43 @@ public class QueryParser {
     }
 
     public String[][] parse(String query) {
+        // TODO: fix issue with multiple queries
+        // TODO: need to unload files after query also
+        // cache shortcut
         if (cache.containsKey(query)) {
             return cache.get(query).RESULT_SET;
         }
-        Query q = new Query(db.getTable());
-        String[] subqueries = query.split("&&");
-        for (String subquery : subqueries) {
-            subquery = subquery.trim();
-            String[] parts = Util.split(subquery, ' ', false);
-            String headerName = parts[0].trim();
-            char operator = parts[1].trim().charAt(0);
-            String toCompareTo = parts[2].trim();
-            try {
-                q.filter(headerName, operator, toCompareTo);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
+        String[] parts = Util.split(query, ' ', false);
+        String headerName = parts[0].trim();
+        char operator = parts[1].trim().charAt(0);
+        String toCompareTo = parts[2].trim();
+        try {
+            return Query.query(db, headerName, operator, toCompareTo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        cache.put(query, new CacheEntry(query, q.getResultSet()));
-        manageCache();
-        return q.getResultSet();
+        /*
+         * // parse and run query
+         * String[][] results = db.getTable().getRows();
+         * 
+         * String[] subqueries = query.split("&&");
+         * for (String subquery : subqueries) {
+         * subquery = subquery.trim();
+         * String[] parts = Util.split(subquery, ' ', false);
+         * String headerName = parts[0].trim();
+         * char operator = parts[1].trim().charAt(0);
+         * String toCompareTo = parts[2].trim();
+         * try {
+         * results = Query.query(db, headerName, operator, toCompareTo);
+         * } catch (Exception e) {
+         * e.printStackTrace();
+         * return null;
+         * }
+         * }
+         * cache.put(query, new CacheEntry(query, results));
+         * manageCache();
+         * return results;
+         */
     }
 }

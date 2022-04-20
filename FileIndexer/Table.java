@@ -9,16 +9,17 @@ public class Table {
     private String[][] rows;
     private Hashtable<String, ArrayList<Integer>> indices;
 
-    public Table(String[][] data) {
-        this.header = data[0];
-        this.rows = Arrays.copyOfRange(data, 1, data.length);
-        this.indices = null;
+    public Table(Hashtable<String, ArrayList<Integer>> indices) {
+        this.indices = indices;
     }
 
-    public Table(String[][] data, Hashtable<String, ArrayList<Integer>> indices) {
+    public Hashtable<String, ArrayList<Integer>> getIndexTable() {
+        return indices;
+    }
+
+    public void loadData(String[][] data) {
         this.header = data[0];
         this.rows = Arrays.copyOfRange(data, 1, data.length);
-        this.indices = indices;
     }
 
     public String[] getHeader() {

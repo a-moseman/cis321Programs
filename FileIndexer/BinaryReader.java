@@ -9,16 +9,16 @@ import java.util.Hashtable;
 import FileIndexer.GlyphicalLib.CSV;
 
 public class BinaryReader {
+    private static final int ROWS_PER_FILE = 100;
 
     /**
-     * Load the source data into a table for processing.
+     * Convert the source file into .dat files.
      */
-    public static Table initialLoad(String path) {
+    public static void initialLoad(String inputPath, String outputPath, String outputFileName, String indexFileName) {
         try {
-            return initialLoadTable(path);
+            initialLoadTable(inputPath, outputPath, outputFileName, indexFileName);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
 
@@ -29,25 +29,65 @@ public class BinaryReader {
      * @param fileName The file name.
      * @return Table
      */
-    public static Table load(String dirPath, String fileName, String indexFileName) {
+    public static String[][] load(String path) {
         try {
-            return loadTable(dirPath, fileName, indexFileName);
+            return loadData(path);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static Table initialLoadTable(String path) throws Exception {
-        RandomAccessFile randomAccessFile = new RandomAccessFile(path, "r");
+    private static String[][] loadData(String path) throws IOException {
+        File file = new File(path);
+        String[][] data = new String[0][0];
+        return addFileContentsToData(data, readFromCompressedFile(file));
+    }
+
+    private static void initialLoadTable(String inputPath, String outputPath, String outputFileName,
+            String indexFileName) throws Exception {
+        RandomAccessFile randomAccessFile = new RandomAccessFile(inputPath, "r");
         String line;
         ArrayList<String> lines = new ArrayList<>();
+        int lineCount = 0;
+        int fileCount = 0;
+        String header = null;
+        Hashtable<String, ArrayList<Integer>> indices = new Hashtable<>();
         while ((line = randomAccessFile.readLine()) != null) {
-            lines.add(line);
+            if (header == null) {
+                header = line;
+            } else {
+                lines.add(line);
+            }
+            String name = pullName(line);
+            if (indices.containsKey(name)) {
+                indices.get(name).add(lineCount + fileCount * ROWS_PER_FILE);
+            } else {
+                indices.put(name, new ArrayList<>());
+                indices.get(name).add(lineCount + fileCount * ROWS_PER_FILE);
+            }
+            lineCount++;
+            if (lineCount >= ROWS_PER_FILE) {
+                lineCount = 0;
+                String data = convertToString(lines);
+                data = header + '\n' + data;
+                BinaryWriter.writeToCompressedFile(outputPath + "//" + outputFileName + "-" + fileCount + ".dat", data);
+                lines.clear();
+                fileCount++;
+            }
         }
-        String[][] data = convertToTable(lines);
+        String data = convertToString(lines);
+        data = header + '\n' + data;
+        BinaryWriter.writeToCompressedFile(outputPath + "//" + outputFileName + "-" + fileCount + ".dat", data);
+
         randomAccessFile.close();
-        return new Table(data);
+        BinaryWriter.saveIndexFile(indices, outputPath + "//" + indexFileName);
+
+    }
+
+    private static String pullName(String row) {
+        String[] rowFields = Util.split(row, ',', false);
+        return rowFields[0];
     }
 
     private static byte[] readBytesFromFile(File file) throws IOException {
@@ -71,20 +111,7 @@ public class BinaryReader {
         }
     }
 
-    private static String[][] readTableData(String dirPath, String fileName) throws IOException {
-        File[] dir = new File(dirPath).listFiles();
-        String[][] data = new String[0][0];
-        for (int i = 0; i < dir.length; i++) {
-            File file = dir[i];
-            if (!file.getName().equals("indexfile.dat")) {
-                String raw = readFromCompressedFile(file);
-                data = addFileContentsToData(data, raw);
-            }
-        }
-        return data;
-    }
-
-    private static Hashtable<String, ArrayList<Integer>> readTableIndexData(String dirPath, String indexFileName)
+    public static Hashtable<String, ArrayList<Integer>> readTableIndexData(String dirPath, String indexFileName)
             throws IOException {
         Hashtable<String, ArrayList<Integer>> index = new Hashtable<>();
         File file = new File(dirPath + "//" + indexFileName);
@@ -101,12 +128,6 @@ public class BinaryReader {
             index.put(key, realIndices);
         }
         return index;
-    }
-
-    private static Table loadTable(String dirPath, String fileName, String indexFileName) throws Exception {
-        String[][] data = readTableData(dirPath, fileName);
-        Hashtable<String, ArrayList<Integer>> index = readTableIndexData(dirPath, indexFileName);
-        return new Table(data, index);
     }
 
     protected static String[][] convertToTable(String[] array) {
@@ -131,5 +152,16 @@ public class BinaryReader {
             }
         }
         return tableData;
+    }
+
+    private static String convertToString(ArrayList<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i));
+            if (i < list.size() - 1) {
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
     }
 }

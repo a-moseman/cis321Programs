@@ -9,12 +9,12 @@ public class Main {
     private static String INDEX_FILE_NAME = "indexfile.dat";
 
     public static void main(String[] args) {
-        Database db = new Database();
+        Database db = new Database(DIR_PATH, FILE_NAME, INDEX_FILE_NAME);
         if (!binFilesExist()) {
             db.initialBinaryLoad(SOURCE_PATH);
-            db.saveBinary(DIR_PATH, FILE_NAME);
         }
-        db.loadBinary(DIR_PATH, FILE_NAME, INDEX_FILE_NAME);
+        db.loadIndex();
+
         runDemo(db);
     }
 
@@ -24,7 +24,7 @@ public class Main {
 
     private static void runDemo(Database db) {
         QueryParser qp = new QueryParser(db);
-        String query = "name < G && name > D";
+        String query = "name < G";
         String[][] resultSet = qp.parse(query);
         Util.print2DStringArray(resultSet);
     }

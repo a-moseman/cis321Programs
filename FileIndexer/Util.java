@@ -66,18 +66,22 @@ public class Util {
     }
 
     public static void print2DStringArray(String[][] array) {
+        System.out.println(tableAsString(array));
+    }
+
+    public static String tableAsString(String[][] table) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[0].length; j++) {
-                sb.append(array[i][j]);
-                if (j < array[0].length - 1) {
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[0].length; j++) {
+                sb.append(table[i][j]);
+                if (j < table[0].length - 1) {
                     sb.append(',');
                 }
             }
-            if (i < array.length - 1) {
+            if (i < table.length - 1) {
                 sb.append('\n');
             }
         }
-        System.out.println(sb);
+        return sb.toString();
     }
 }
