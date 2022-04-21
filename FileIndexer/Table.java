@@ -11,6 +11,11 @@ public class Table {
 
     public Table(Hashtable<String, ArrayList<Integer>> indices) {
         this.indices = indices;
+        this.rows = new String[0][0];
+    }
+
+    public void unload() {
+        this.rows = new String[0][0];
     }
 
     public Hashtable<String, ArrayList<Integer>> getIndexTable() {
@@ -19,7 +24,7 @@ public class Table {
 
     public void loadData(String[][] data) {
         this.header = data[0];
-        this.rows = Arrays.copyOfRange(data, 1, data.length);
+        this.rows = Util.concatenateArrays(this.rows, Arrays.copyOfRange(data, 1, data.length));
     }
 
     public String[] getHeader() {

@@ -1,6 +1,7 @@
 package FileIndexer;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Database {
     private final String DIR_PATH;
@@ -9,10 +10,13 @@ public class Database {
 
     private Table table;
 
+    private ArrayList<Integer> loadedFileIndices;
+
     public Database(String dirPath, String fileName, String indexFileName) {
         this.DIR_PATH = dirPath;
         this.FILE_NAME = fileName;
         this.INDEX_FILE_NAME = indexFileName;
+        this.loadedFileIndices = new ArrayList<>();
     }
 
     public Table getTable() {
@@ -28,7 +32,10 @@ public class Database {
     }
 
     public void load(int index) {
-        table.loadData(BinaryReader.load(DIR_PATH + "//" + FILE_NAME + "-" + index + ".dat"));
+        if (!loadedFileIndices.contains(index)) {
+            table.loadData(BinaryReader.load(DIR_PATH + "//" + FILE_NAME + "-" + index + ".dat"));
+            loadedFileIndices.add(index);
+        }
     }
 
     public void loadAll() {
@@ -36,6 +43,10 @@ public class Database {
         for (int i = 0; i < dir.length - 1; i++) { // - 1 to ignore indexfile.dat
             load(i);
         }
+    }
+
+    public void unload() {
+        table.unload();
     }
 
     public void initialBinaryLoad(String sourcePath) {
