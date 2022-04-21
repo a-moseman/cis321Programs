@@ -1,6 +1,7 @@
 package FileIndexer;
 
 import java.io.File;
+import java.util.Scanner;
 
 public class Main {
     private static String SOURCE_PATH = "FileIndexer//10E.csv";
@@ -16,6 +17,17 @@ public class Main {
         db.loadIndex();
 
         runDemo(db);
+        // cli(db);
+    }
+
+    public static void cli(Database db) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        QueryParser qp = new QueryParser(db);
+        while (!(input = scanner.nextLine()).equals("exit")) {
+            String[][] resultSet = qp.parse(input);
+            Util.print2DStringArray(resultSet);
+        }
     }
 
     private static boolean binFilesExist() {
