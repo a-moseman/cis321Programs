@@ -28,23 +28,28 @@ public class QueryParser {
     }
 
     public String[][] parse(String query) {
-        String[] subqueries = query.split("&&");
-        // do initial query condition
-        String[] parts = Util.split(subqueries[0].trim(), ' ', false);
-        String headerName = parts[0].trim();
-        char operator = parts[1].trim().charAt(0);
-        String toCompareTo = parts[2].trim();
-        String[][] results = Query.initialQuery(db, headerName, operator, toCompareTo);
-        for (int i = 1; i < subqueries.length; i++) {
-            String subquery = subqueries[i].trim();
-            parts = Util.split(subquery, ' ', false);
-            headerName = parts[0].trim();
-            operator = parts[1].trim().charAt(0);
-            toCompareTo = parts[2].trim();
-            results = Query.query(results, db, headerName, operator, toCompareTo);
+        try {
+            String[] subqueries = query.split("&&");
+            // do initial query condition
+            String[] parts = Util.split(subqueries[0].trim(), ' ', false);
+            String headerName = parts[0].trim();
+            char operator = parts[1].trim().charAt(0);
+            String toCompareTo = parts[2].trim();
+            String[][] results = Query.initialQuery(db, headerName, operator, toCompareTo);
+            for (int i = 1; i < subqueries.length; i++) {
+                String subquery = subqueries[i].trim();
+                parts = Util.split(subquery, ' ', false);
+                headerName = parts[0].trim();
+                operator = parts[1].trim().charAt(0);
+                toCompareTo = parts[2].trim();
+                results = Query.query(results, db, headerName, operator, toCompareTo);
+            }
+            cache.put(query, new CacheEntry(query, results));
+            manageCache();
+            return results;
+        } catch (Exception e) {
+            System.out.println("Invalid query.");
+            return null;
         }
-        cache.put(query, new CacheEntry(query, results));
-        manageCache();
-        return results;
     }
 }

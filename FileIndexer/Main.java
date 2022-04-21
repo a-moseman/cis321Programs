@@ -26,7 +26,9 @@ public class Main {
         QueryParser qp = new QueryParser(db);
         while (!(input = scanner.nextLine()).equals("exit")) {
             String[][] resultSet = qp.parse(input);
-            Util.print2DStringArray(resultSet);
+            if (resultSet != null) {
+                Util.print2DStringArray(resultSet);
+            }
         }
         scanner.close();
     }
@@ -37,8 +39,10 @@ public class Main {
 
     private static void runDemo(Database db) {
         QueryParser qp = new QueryParser(db);
-        String query = "name < G && name > D";
+        String query = "name < G";
         String[][] resultSet = qp.parse(query);
-        Util.print2DStringArray(resultSet);
+        if (resultSet != null) {
+            Util.print2DStringArray(resultSet);
+        }
     }
 }

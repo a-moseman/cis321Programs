@@ -19,13 +19,17 @@ public class Database {
         this.loadedFileIndices = new ArrayList<>();
     }
 
+    public ArrayList<Integer> getLoadedFileIndices() {
+        return loadedFileIndices;
+    }
+
     public Table getTable() {
         return table;
     }
 
     public void loadIndex() {
         try {
-            this.table = new Table(BinaryReader.readTableIndexData(DIR_PATH, INDEX_FILE_NAME));
+            this.table = new Table(this, BinaryReader.readTableIndexData(DIR_PATH, INDEX_FILE_NAME));
         } catch (Exception e) {
             e.printStackTrace();
         }

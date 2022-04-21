@@ -5,20 +5,15 @@ import java.util.ArrayList;
 public class Query {
     private static final int ROWS_PER_FILE = 100;
 
-    public static String[][] query(String[][] data, Database db, String headerName, char operator, String toCompareTo) {
+    public static String[][] query(String[][] data, Database db, String headerName, char operator, String toCompareTo)
+            throws Exception {
         if (headerName.equals("name")) {
             loadQueriedTables(db, operator, toCompareTo);
         } else {
             db.loadAll();
         }
-
-        try {
-            int headerIndex = searchHeaderIndexByName(db.getTable().getHeader(), headerName);
-            return convertTo2DArray(filterDataByCondition(data, headerIndex, operator, toCompareTo));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        int headerIndex = searchHeaderIndexByName(db.getTable().getHeader(), headerName);
+        return convertTo2DArray(filterDataByCondition(data, headerIndex, operator, toCompareTo));
     }
 
     private static String[][] convertTo2DArray(ArrayList<String[]> list) {
@@ -29,18 +24,14 @@ public class Query {
         return output;
     }
 
-    public static String[][] initialQuery(Database db, String headerName, char operator, String toCompareTo) {
+    public static String[][] initialQuery(Database db, String headerName, char operator, String toCompareTo)
+            throws Exception {
         db.loadAll();
         // perform the query
         if (headerName.equals("name")) {
             return query(db, operator, toCompareTo);
         }
-        try {
-            return filter(db.getTable(), headerName, operator, toCompareTo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return filter(db.getTable(), headerName, operator, toCompareTo);
     }
 
     private static void loadQueriedTables(Database db, char operator, String toCompareTo) {
@@ -67,15 +58,9 @@ public class Query {
         }
     }
 
-    private static String[][] query(Database db, char operator, String toCompareTo) {
+    private static String[][] query(Database db, char operator, String toCompareTo) throws Exception {
         loadQueriedTables(db, operator, toCompareTo);
-        // perform the query
-        try {
-            return filter(db.getTable(), "name", operator, toCompareTo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return filter(db.getTable(), "name", operator, toCompareTo);
     }
 
     /**
@@ -107,6 +92,9 @@ public class Query {
 
     private static String[][] filter(Table table, String headerName, char operator, String toCompareTo)
             throws Exception {
+        if (headerName.equals("name") && operator == '=') {
+            return table.getByName(toCompareTo);
+        }
         int headerIndex = searchHeaderIndexByName(table.getHeader(), headerName);
         if (headerIndex < 0) {
             throw new Exception("Header name not found.");
