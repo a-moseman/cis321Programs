@@ -5,7 +5,31 @@ import java.util.ArrayList;
 public class Query {
     private static final int ROWS_PER_FILE = 100;
 
-    public static String[][] query(Database db, String headerName, char operator, String toCompareTo) {
+    public static String[][] query(String[][] data, Database db, String headerName, char operator, String toCompareTo) {
+        if (headerName.equals("name")) {
+            loadQueriedTables(db, operator, toCompareTo);
+        } else {
+            db.loadAll();
+        }
+
+        try {
+            int headerIndex = searchHeaderIndexByName(db.getTable().getHeader(), headerName);
+            return convertTo2DArray(filterDataByCondition(data, headerIndex, operator, toCompareTo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String[][] convertTo2DArray(ArrayList<String[]> list) {
+        String[][] output = new String[list.size()][list.get(0).length];
+        for (int i = 0; i < list.size(); i++) {
+            output[i] = list.get(i);
+        }
+        return output;
+    }
+
+    public static String[][] initialQuery(Database db, String headerName, char operator, String toCompareTo) {
         db.loadAll();
         // perform the query
         if (headerName.equals("name")) {
@@ -19,7 +43,7 @@ public class Query {
         }
     }
 
-    private static String[][] query(Database db, char operator, String toCompareTo) {
+    private static void loadQueriedTables(Database db, char operator, String toCompareTo) {
         // determine which files to load
         ArrayList<String> names = new ArrayList<>(db.getTable().getIndexTable().keySet());
         ArrayList<Integer> indices = new ArrayList<>();
@@ -41,6 +65,10 @@ public class Query {
         for (Integer index : fileIndices) {
             db.load(index);
         }
+    }
+
+    private static String[][] query(Database db, char operator, String toCompareTo) {
+        loadQueriedTables(db, operator, toCompareTo);
         // perform the query
         try {
             return filter(db.getTable(), "name", operator, toCompareTo);
@@ -57,9 +85,9 @@ public class Query {
      * @param headerName
      * @return int
      */
-    private static int searchHeaderIndexByName(Table table, String headerName) {
-        for (int i = 0; i < table.getHeader().length; i++) {
-            if (table.getHeader()[i].equals(headerName)) {
+    private static int searchHeaderIndexByName(String[] header, String headerName) {
+        for (int i = 0; i < header.length; i++) {
+            if (header[i].equals(headerName)) {
                 return i;
             }
         }
@@ -79,7 +107,7 @@ public class Query {
 
     private static String[][] filter(Table table, String headerName, char operator, String toCompareTo)
             throws Exception {
-        int headerIndex = searchHeaderIndexByName(table, headerName);
+        int headerIndex = searchHeaderIndexByName(table.getHeader(), headerName);
         if (headerIndex < 0) {
             throw new Exception("Header name not found.");
         }

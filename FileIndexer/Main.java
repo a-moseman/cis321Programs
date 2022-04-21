@@ -24,7 +24,7 @@ public class Main {
 
     private static void runDemo(Database db) {
         QueryParser qp = new QueryParser(db);
-        String query = "name < G";
+        String query = "name < G && name > D";
         String[][] resultSet = qp.parse(query);
         Util.print2DStringArray(resultSet);
     }

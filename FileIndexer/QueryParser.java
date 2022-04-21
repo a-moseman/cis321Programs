@@ -28,43 +28,23 @@ public class QueryParser {
     }
 
     public String[][] parse(String query) {
-        // TODO: fix issue with multiple queries
-        // TODO: need to unload files after query also
-        // cache shortcut
-        if (cache.containsKey(query)) {
-            return cache.get(query).RESULT_SET;
-        }
-        String[] parts = Util.split(query, ' ', false);
+        String[] subqueries = query.split("&&");
+        // do initial query condition
+        String[] parts = Util.split(subqueries[0].trim(), ' ', false);
         String headerName = parts[0].trim();
         char operator = parts[1].trim().charAt(0);
         String toCompareTo = parts[2].trim();
-        try {
-            return Query.query(db, headerName, operator, toCompareTo);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        String[][] results = Query.initialQuery(db, headerName, operator, toCompareTo);
+        for (int i = 1; i < subqueries.length; i++) {
+            String subquery = subqueries[i].trim();
+            parts = Util.split(subquery, ' ', false);
+            headerName = parts[0].trim();
+            operator = parts[1].trim().charAt(0);
+            toCompareTo = parts[2].trim();
+            results = Query.query(results, db, headerName, operator, toCompareTo);
         }
-        /*
-         * // parse and run query
-         * String[][] results = db.getTable().getRows();
-         * 
-         * String[] subqueries = query.split("&&");
-         * for (String subquery : subqueries) {
-         * subquery = subquery.trim();
-         * String[] parts = Util.split(subquery, ' ', false);
-         * String headerName = parts[0].trim();
-         * char operator = parts[1].trim().charAt(0);
-         * String toCompareTo = parts[2].trim();
-         * try {
-         * results = Query.query(db, headerName, operator, toCompareTo);
-         * } catch (Exception e) {
-         * e.printStackTrace();
-         * return null;
-         * }
-         * }
-         * cache.put(query, new CacheEntry(query, results));
-         * manageCache();
-         * return results;
-         */
+        cache.put(query, new CacheEntry(query, results));
+        manageCache();
+        return results;
     }
 }
