@@ -28,6 +28,7 @@ public class Main {
             String[][] resultSet = qp.parse(input);
             Util.print2DStringArray(resultSet);
         }
+        scanner.close();
     }
 
     private static boolean binFilesExist() {
