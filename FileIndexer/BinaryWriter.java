@@ -7,7 +7,13 @@ import java.util.Hashtable;
 
 import FileIndexer.GlyphicalLib.CSV;
 
+/**
+ * Class for writing binary files.
+ */
 public class BinaryWriter {
+    /**
+     * Write the index file.
+     */
     public static void saveIndexFile(Hashtable<String, ArrayList<Integer>> data, String path) throws Exception {
         StringBuilder output = new StringBuilder();
         for (String key : data.keySet()) {
@@ -27,6 +33,9 @@ public class BinaryWriter {
         writeToCompressedFile(path, output.toString());
     }
 
+    /**
+     * Write compressed data to a binary file.
+     */
     public static void writeToCompressedFile(String path, String data) throws Exception {
         File file = new File(path);
         file.createNewFile();

@@ -5,15 +5,26 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
+/**
+ * Class to parse a String as a query.
+ */
 public class QueryParser {
     private Database db;
     private Hashtable<String, CacheEntry> cache;
 
+    /**
+     * Construct a QueryParser.
+     * 
+     * @param db The database.
+     */
     public QueryParser(Database db) {
         this.db = db;
         this.cache = new Hashtable<>();
     }
 
+    /**
+     * Manage the cache of the QueryParser.
+     */
     private void manageCache() {
         List<CacheEntry> list = new ArrayList<CacheEntry>(cache.values());
         ArrayList<String> keysToRemove = new ArrayList<>();
@@ -27,6 +38,12 @@ public class QueryParser {
         }
     }
 
+    /**
+     * Parse the provided query.
+     * 
+     * @param query The query.
+     * @return String[][]
+     */
     public String[][] parse(String query) {
         try {
             String[] subqueries = query.split("&&");

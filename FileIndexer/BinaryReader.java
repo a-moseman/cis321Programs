@@ -8,6 +8,10 @@ import java.util.Hashtable;
 
 import FileIndexer.GlyphicalLib.CSV;
 
+/**
+ * Class for reading binary files into memory and the initial set up of the
+ * files.
+ */
 public class BinaryReader {
     private static final int ROWS_PER_FILE = 100;
 
@@ -38,12 +42,18 @@ public class BinaryReader {
         }
     }
 
+    /**
+     * Load the data from a .dat file.
+     */
     private static String[][] loadData(String path) throws IOException {
         File file = new File(path);
         String[][] data = new String[0][0];
         return addFileContentsToData(data, readFromCompressedFile(file));
     }
 
+    /**
+     * Load the data from the source file into a set of .dat files.
+     */
     private static void initialLoadTable(String inputPath, String outputPath, String outputFileName,
             String indexFileName) throws Exception {
         RandomAccessFile randomAccessFile = new RandomAccessFile(inputPath, "r");
@@ -111,6 +121,14 @@ public class BinaryReader {
         }
     }
 
+    /**
+     * Read the index file data from file.
+     * 
+     * @param dirPath
+     * @param indexFileName
+     * @return
+     * @throws IOException
+     */
     public static Hashtable<String, ArrayList<Integer>> readTableIndexData(String dirPath, String indexFileName)
             throws IOException {
         Hashtable<String, ArrayList<Integer>> index = new Hashtable<>();
